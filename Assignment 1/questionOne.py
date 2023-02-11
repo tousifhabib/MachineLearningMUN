@@ -41,6 +41,9 @@ for k in k_values:
     train_accuracy = accuracy_score(train_labels, train_preds)
     test_accuracy = accuracy_score(test_labels, test_preds)
 
+    train_errors.append(1 - train_accuracy)
+    test_errors.append(1 - test_accuracy)
+
     print("K Value: ", k)
     print("Train accuracy")
     print(train_accuracy)
@@ -53,9 +56,15 @@ for k in k_values:
     Z = knn.predict(np.c_[X, Y])
 
     plt.scatter(X, Y, c=Z)
-    plt.scatter(train_sNC[0], train_sNC[1], c='green', marker='o', label='sNC (Train)')
-    plt.scatter(train_sDAT[0], train_sDAT[1], c='blue', marker='o', label='sDAT (Train)')
-    plt.scatter(test_sNC[0], test_sNC[1], c='red', marker='+', label='sNC (Test)')
-    plt.scatter(test_sDAT[0], test_sDAT[1], c='orange', marker='+', label='sDAT (Test)')
+    # plt.scatter(train_sNC[0], train_sNC[1], c='green', marker='+', label='sNC (Train)')
+    # plt.scatter(train_sDAT[0], train_sDAT[1], c='blue', marker='+', label='sDAT (Train)')
+    plt.scatter(test_sNC[0], test_sNC[1], c='red', marker='x', label='sNC (Test)')
+    plt.scatter(test_sDAT[0], test_sDAT[1], c='orange', marker='x', label='sDAT (Test)')
+    plt.title(k)
     plt.show()
 
+plt.plot(k_values, train_errors, label='Train Error')
+plt.plot(k_values, test_errors, label='Test Error')
+plt.xlabel('K Value')
+plt.ylabel('Error rate')
+plt.show()
