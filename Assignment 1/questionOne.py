@@ -44,22 +44,16 @@ for k in k_values:
     train_errors.append(1 - train_accuracy)
     test_errors.append(1 - test_accuracy)
 
-    print("K Value: ", k)
-    print("Train accuracy")
-    print(train_accuracy)
-    print("Test accuracy")
-    print(test_accuracy)
-
     # generate the classification boundary visualization plot
     plt.figure()
     plt.title("k = " + str(k) + " (Train Error: " + str(round(train_errors[-1], 4)) +
               ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
 
     plt.scatter(grid_points.iloc[:, 0], grid_points.iloc[:, 1], c=knn.predict(grid_points),  alpha=0.5)
-    plt.scatter(train_sNC.iloc[:, 0], train_sNC.iloc[:, 1], c='green', marker='o', label='sNC (Train)')
-    plt.scatter(train_sDAT.iloc[:, 0], train_sDAT.iloc[:, 1], c='blue', marker='x', label='sDAT (Train)')
-    plt.scatter(test_sNC.iloc[:, 0], test_sNC.iloc[:, 1], c='red', marker='o', label='sNC (Test)')
-    plt.scatter(test_sDAT.iloc[:, 0], test_sDAT.iloc[:, 1], c='green', marker='x', label='sDAT (Test)')
+    plt.scatter(train_sNC.iloc[:, 0], train_sNC.iloc[:, 1], c='purple', marker='o', label='sNC (Train)')
+    plt.scatter(train_sDAT.iloc[:, 0], train_sDAT.iloc[:, 1], c='orange', marker='x', label='sDAT (Train)')
+    plt.scatter(test_sNC.iloc[:, 0], test_sNC.iloc[:, 1], c='green', marker='o', label='sNC (Test)')
+    plt.scatter(test_sDAT.iloc[:, 0], test_sDAT.iloc[:, 1], c='blue', marker='x', label='sDAT (Test)')
     plt.legend()
     plt.show()
 
