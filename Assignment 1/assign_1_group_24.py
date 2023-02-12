@@ -95,6 +95,52 @@ def Q2_results():
 
 def Q3_results():
     print('Generating results for Q3...')
+    metric = 'manhattan'  # chosen distance metric from Q2 because of Occams Razor
+    k_values = range(1, 201)
+    train_errors = []
+    test_errors = []
+    for k in k_values:
+        knn = KNeighborsClassifier(n_neighbors=k, metric=metric)
+
+        # Load the training data
+        train_sNC = pd.read_csv(train_sNC_file_path, header=None, delimiter=",")
+        train_sDAT = pd.read_csv(train_sDAT_file_path, header=None, delimiter=",")
+
+        # Load the test data
+        test_sNC = pd.read_csv(test_sNC_file_path, header=None, delimiter=",")
+        test_sDAT = pd.read_csv(test_sDAT_file_path, header=None, delimiter=",")
+
+        # Load the 2D grid points
+        grid_points = pd.read_csv("2D_grid_points.csv", header=None, delimiter=",")
+        grid_points.columns = ["X", "Y"]
+
+        # Concatenate the training data and test data
+        train_data = pd.concat([train_sNC, train_sDAT], axis=0)
+        train_labels = np.concatenate((np.zeros(len(train_sNC)), np.ones(len(train_sDAT))))
+
+        test_data = pd.concat([test_sNC, test_sDAT], axis=0)
+        test_labels = np.concatenate((np.zeros(len(test_sNC)), np.ones(len(test_sDAT))))
+
+        # Train the classifier
+        knn.fit(train_data, train_labels)
+
+        train_preds = knn.predict(train_data)
+        test_preds = knn.predict(test_data)
+
+        # Calculate the accuracy on the training and test data
+        train_accuracy = accuracy_score(train_labels, train_preds)
+        test_accuracy = accuracy_score(test_labels, test_preds)
+
+        train_errors.append(1 - train_accuracy)
+        test_errors.append(1 - test_accuracy)
+
+    model_capacity = [1 / k for k in k_values]
+    plt.semilogx(model_capacity, train_errors, label='Train Error')
+    plt.semilogx(model_capacity, test_errors, label='Test Error')
+    plt.xlabel('Model Capacity (1/k)')
+    plt.ylabel('Error rate')
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     Q1_results()
