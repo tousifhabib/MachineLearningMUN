@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-def classify():
+def classify(metric):
     # Load the training data
     train_sNC = pd.read_csv("train.sNC.csv", header=None, delimiter=",")
     train_sDAT = pd.read_csv("train.sDAT.csv", header=None, delimiter=",")
@@ -27,7 +27,7 @@ def classify():
     train_errors = []
     test_errors = []
     for k in k_values:
-        knn = KNeighborsClassifier(n_neighbors=k, metric='euclidean')
+        knn = KNeighborsClassifier(n_neighbors=k, metric=metric)
 
         # Train the classifier
         knn.fit(train_data, train_labels)
@@ -63,7 +63,7 @@ def classify():
 
 def Q1_results():
     print('Generating results for Q1...')
-    k_values, train_errors, test_errors = classify()
+    k_values, train_errors, test_errors = classify('euclidean')
     plt.plot(k_values, train_errors, label='Train Error')
     plt.plot(k_values, test_errors, label='Test Error')
     plt.xlabel('K Value')
