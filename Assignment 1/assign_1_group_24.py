@@ -3,14 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-def classify(metric):
+
+# Global variables
+train_sNC_file_path = "train.sNC.csv"
+train_sDAT_file_path = "train.sDAT.csv"
+test_sNC_file_path = "test.sNC.csv"
+test_sDAT_file_path = "test.sDAT.csv"
+
+def classify(metric, k_values):
     # Load the training data
-    train_sNC = pd.read_csv("train.sNC.csv", header=None, delimiter=",")
-    train_sDAT = pd.read_csv("train.sDAT.csv", header=None, delimiter=",")
+    train_sNC = pd.read_csv(train_sNC_file_path, header=None, delimiter=",")
+    train_sDAT = pd.read_csv(train_sDAT_file_path, header=None, delimiter=",")
 
     # Load the test data
-    test_sNC = pd.read_csv("test.sNC.csv", header=None, delimiter=",")
-    test_sDAT = pd.read_csv("test.sDAT.csv", header=None, delimiter=",")
+    test_sNC = pd.read_csv(test_sNC_file_path, header=None, delimiter=",")
+    test_sDAT = pd.read_csv(test_sDAT_file_path, header=None, delimiter=",")
 
     # Load the 2D grid points
     grid_points = pd.read_csv("2D_grid_points.csv", header=None, delimiter=",")
@@ -23,9 +30,9 @@ def classify(metric):
     test_data = pd.concat([test_sNC, test_sDAT], axis=0)
     test_labels = np.concatenate((np.zeros(len(test_sNC)), np.ones(len(test_sDAT))))
 
-    k_values = [1, 3, 5, 10, 20, 30, 50, 100, 150, 200]
     train_errors = []
     test_errors = []
+
     for k in k_values:
         knn = KNeighborsClassifier(n_neighbors=k, metric=metric)
 
@@ -47,7 +54,7 @@ def classify(metric):
 
         # Plot the decision boundary using a contour plot
         plt.figure()
-        plt.title("k = " + str(k) + " (Train Error: " + str(round(train_errors[-1], 4)) +
+        plt.title(metric + "\n" "k = " + str(k) + "\n" + " (Train Error: " + str(round(train_errors[-1], 4)) +
                   ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
         plt.scatter(grid_points['X'], grid_points['Y'], c=grid_preds)
         # plt.scatter(train_sNC[0], train_sNC[1], c='purple', marker='o', label='sNC (Train)')
@@ -59,11 +66,12 @@ def classify(metric):
         plt.ylabel('Y')
         plt.show()
 
-    return k_values, train_errors, test_errors
+    return train_errors, test_errors
 
 def Q1_results():
     print('Generating results for Q1...')
-    k_values, train_errors, test_errors = classify('euclidean')
+    k_values = [1, 3, 5, 10, 20, 30, 50, 100, 150, 200]
+    train_errors, test_errors = classify('euclidean', k_values)
     plt.plot(k_values, train_errors, label='Train Error')
     plt.plot(k_values, test_errors, label='Test Error')
     plt.xlabel('K Value')
@@ -72,6 +80,10 @@ def Q1_results():
 
 def Q2_results():
     print('Generating results for Q2...')
+    k_values = [30]
+    train_errors, test_errors = classify('manhattan', k_values)
+    print("This is the train error rate: " + str(train_errors[0]))
+    print("This is the test error rate: " + str(test_errors[0]))
 
 def Q3_results():
     print('Generating results for Q3...')
