@@ -50,18 +50,19 @@ for k in k_values:
     print("Test accuracy")
     print(test_accuracy)
 
-    # Plot the decision boundary and the data points
-    X = grid_points.iloc[:, 0].values.reshape(-1, 1)
-    Y = grid_points.iloc[:, 1].values.reshape(-1, 1)
-    Z = knn.predict(np.c_[X, Y])
+    # generate the classification boundary visualization plot
+    plt.figure()
+    plt.title("k = " + str(k) + " (Train Error: " + str(round(train_errors[-1], 4)) +
+              ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
 
-    plt.scatter(X, Y, c=Z)
-    # plt.scatter(train_sNC[0], train_sNC[1], c='green', marker='+', label='sNC (Train)')
-    # plt.scatter(train_sDAT[0], train_sDAT[1], c='blue', marker='+', label='sDAT (Train)')
-    plt.scatter(test_sNC[0], test_sNC[1], c='red', marker='x', label='sNC (Test)')
-    plt.scatter(test_sDAT[0], test_sDAT[1], c='orange', marker='x', label='sDAT (Test)')
-    plt.title(k)
+    plt.scatter(grid_points.iloc[:, 0], grid_points.iloc[:, 1], c=knn.predict(grid_points),  alpha=0.5)
+    plt.scatter(train_sNC.iloc[:, 0], train_sNC.iloc[:, 1], c='green', marker='o', label='sNC (Train)')
+    plt.scatter(train_sDAT.iloc[:, 0], train_sDAT.iloc[:, 1], c='blue', marker='x', label='sDAT (Train)')
+    plt.scatter(test_sNC.iloc[:, 0], test_sNC.iloc[:, 1], c='red', marker='o', label='sNC (Test)')
+    plt.scatter(test_sDAT.iloc[:, 0], test_sDAT.iloc[:, 1], c='green', marker='x', label='sDAT (Test)')
+    plt.legend()
     plt.show()
+
 
 plt.plot(k_values, train_errors, label='Train Error')
 plt.plot(k_values, test_errors, label='Test Error')
