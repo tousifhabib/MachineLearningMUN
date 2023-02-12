@@ -53,7 +53,7 @@ def classify(metric, k_values):
         grid_preds = knn.predict(grid_points)
 
         # Plot the decision boundary using a contour plot
-        plt.figure(figsize=(8,8), dpi=80)
+        plt.figure(figsize=(8, 8), dpi=80)
         plt.title(metric + "\n" "k = " + str(k) + "\n" + " (Train Error: " + str(round(train_errors[-1], 4)) +
                   ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
         plt.scatter(grid_points['X'], grid_points['Y'], c=grid_preds)
@@ -82,14 +82,13 @@ def Q1_results():
 
 def Q2_results():
     print('Generating results for Q2...')
+    # K value 30 should be utilized from question 1
     k_values = [1, 3, 5, 10, 20, 30, 50, 100, 150, 200]
     train_errors, test_errors = classify('manhattan', k_values)
-    print("This is the train error rate: " + str(train_errors[0]))
-    print("This is the test error rate: " + str(test_errors[0]))
     plt.title('Error rate for Manhattan')
     plt.plot(k_values, train_errors, label='Train Error')
     plt.plot(k_values, test_errors, label='Test Error')
-    plt.legend
+    plt.legend()
     plt.xlabel('K Value')
     plt.ylabel('Error rate')
     plt.show()
