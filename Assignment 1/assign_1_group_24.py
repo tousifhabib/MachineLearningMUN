@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
@@ -56,11 +57,11 @@ def visualize_results(metric, k, train_errors, test_errors, grid_points, train_s
     plt.figure(figsize=(8, 8), dpi=80)
     plt.title(metric + "\n" "k = " + str(k) + "\n" + " (Train Error: " + str(round(train_errors[-1], 4)) +
               ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
-    plt.scatter(grid_points['X'], grid_points['Y'], c=grid_preds)
+    plt.scatter(grid_points['X'], grid_points['Y'], c=grid_preds, marker='.', cmap=ListedColormap(['b', 'g']))
     plt.scatter(train_sNC[0], train_sNC[1], c='purple', marker='o', label='sNC (Train)')
-    plt.scatter(train_sDAT[0], train_sDAT[1], c='orange', marker='x', label='sDAT (Train)')
-    plt.scatter(test_sNC[0], test_sNC[1], c='green', marker='o', label='sNC (Test)')
-    plt.scatter(test_sDAT[0], test_sDAT[1], c='blue', marker='x', label='sDAT (Test)')
+    plt.scatter(train_sDAT[0], train_sDAT[1], c='orange', marker='o', label='sDAT (Train)')
+    plt.scatter(test_sNC[0], test_sNC[1], c='red', marker='+', label='sNC (Test)')
+    plt.scatter(test_sDAT[0], test_sDAT[1], c='black', marker='+', label='sDAT (Test)')
     plt.legend()
     plt.xlabel('X')
     plt.ylabel('Y')
