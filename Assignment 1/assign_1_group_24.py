@@ -5,6 +5,7 @@ from matplotlib.colors import ListedColormap
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
+
 def load_data(file_path):
     return pd.read_csv(file_path, header=None, delimiter=",")
 
@@ -13,6 +14,7 @@ def load_grid_points():
     grid_points = pd.read_csv("2D_grid_points.csv", header=None, delimiter=",")
     grid_points.columns = ["X", "Y"]
     return grid_points
+
 
 def load_and_concat_data(train_path1, train_path2, test_path1, test_path2):
     train_data1 = load_data(train_path1)
@@ -27,6 +29,7 @@ def load_and_concat_data(train_path1, train_path2, test_path1, test_path2):
     test_labels = np.concatenate((np.zeros(len(test_data1)), np.ones(len(test_data2))))
 
     return train_data, train_labels, test_data, test_labels
+
 
 def train_classifier(metric, k, train_data, train_labels):
     knn = KNeighborsClassifier(n_neighbors=k, metric=metric)
@@ -50,6 +53,7 @@ def calculate_errors(classifier, train_data, train_labels, test_data, test_label
 
     return train_error, test_error
 
+
 def visualize_results(metric, k, train_errors, test_errors, grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT,
                       classifier):
     grid_preds = predict_labels(classifier, grid_points)
@@ -58,16 +62,18 @@ def visualize_results(metric, k, train_errors, test_errors, grid_points, train_s
     plt.title(metric + "\n" "k = " + str(k) + "\n" + " (Train Error: " + str(round(train_errors[-1], 4)) +
               ", Test Error: " + str(round(test_errors[-1], 4)) + ")")
     plt.scatter(grid_points['X'], grid_points['Y'], c=grid_preds, marker='.', cmap=ListedColormap(['b', 'g']))
-    plt.scatter(train_sNC[0], train_sNC[1], c='purple', marker='o', label='sNC (Train)')
-    plt.scatter(train_sDAT[0], train_sDAT[1], c='orange', marker='o', label='sDAT (Train)')
-    plt.scatter(test_sNC[0], test_sNC[1], c='red', marker='+', label='sNC (Test)')
-    plt.scatter(test_sDAT[0], test_sDAT[1], c='black', marker='+', label='sDAT (Test)')
+    plt.scatter(train_sNC[0], train_sNC[1], c='green', marker='o', label='sNC (Train)')
+    plt.scatter(train_sDAT[0], train_sDAT[1], c='blue', marker='o', label='sDAT (Train)')
+    plt.scatter(test_sNC[0], test_sNC[1], c='green', marker='+', label='sNC (Test)')
+    plt.scatter(test_sDAT[0], test_sDAT[1], c='blue', marker='+', label='sDAT (Test)')
     plt.legend()
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.show()
 
-def classify(metric, k_values, train_data, train_labels, test_data, test_labels, grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT):
+
+def classify(metric, k_values, train_data, train_labels, test_data, test_labels, grid_points, train_sNC, train_sDAT,
+             test_sNC, test_sDAT, showPlot=True):
     train_errors = []
     test_errors = []
 
@@ -78,7 +84,9 @@ def classify(metric, k_values, train_data, train_labels, test_data, test_labels,
         train_errors.append(train_error)
         test_errors.append(test_error)
 
-        visualize_results(metric, k, train_errors, test_errors, grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, classifier)
+        if (showPlot):
+            visualize_results(metric, k, train_errors, test_errors, grid_points, train_sNC, train_sDAT, test_sNC,
+                              test_sDAT, classifier)
 
     return train_errors, test_errors
 
@@ -110,7 +118,8 @@ def Q1_results():
     train_data, train_labels, test_data, test_labels = load_and_concat_data(train_sNC_file_path, train_sDAT_file_path,
                                                                             test_sNC_file_path, test_sDAT_file_path)
 
-    train_errors, test_errors = classify('euclidean', k_values, train_data, train_labels, test_data, test_labels, grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT)
+    train_errors, test_errors = classify('euclidean', k_values, train_data, train_labels, test_data, test_labels,
+                                         grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT)
 
     plt.title('Error rate for Euclidean')
     plt.plot(k_values, train_errors, label='Train Error')
@@ -133,7 +142,8 @@ def Q2_results():
     train_data, train_labels, test_data, test_labels = load_and_concat_data(train_sNC_file_path, train_sDAT_file_path,
                                                                             test_sNC_file_path, test_sDAT_file_path)
 
-    train_errors, test_errors = classify('manhattan', k_values, train_data, train_labels, test_data, test_labels, grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT)
+    train_errors, test_errors = classify('manhattan', k_values, train_data, train_labels, test_data, test_labels,
+                                         grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT)
 
     plt.title('Error rate for Manhattan')
     plt.plot(k_values, train_errors, label='Train Error')
@@ -150,8 +160,18 @@ def Q3_results():
     train_data, train_labels, test_data, test_labels = load_and_concat_data(train_sNC_file_path, train_sDAT_file_path,
                                                                             test_sNC_file_path, test_sDAT_file_path)
 
-    euclidean_model_capacity, euclidean_train_errors, euclidean_test_errors = generate_error_rate_curve('euclidean', range(1, 201), train_data, train_labels, test_data, test_labels)
-    manhattan_model_capacity, manhattan_train_errors, manhattan_test_errors = generate_error_rate_curve('manhattan', range(1, 201), train_data, train_labels, test_data, test_labels)
+    euclidean_model_capacity, euclidean_train_errors, euclidean_test_errors = generate_error_rate_curve('euclidean',
+                                                                                                        range(1, 201),
+                                                                                                        train_data,
+                                                                                                        train_labels,
+                                                                                                        test_data,
+                                                                                                        test_labels)
+    manhattan_model_capacity, manhattan_train_errors, manhattan_test_errors = generate_error_rate_curve('manhattan',
+                                                                                                        range(1, 201),
+                                                                                                        train_data,
+                                                                                                        train_labels,
+                                                                                                        test_data,
+                                                                                                        test_labels)
 
     plt.semilogx(euclidean_model_capacity, euclidean_train_errors, label='Euclidean Train Error')
     plt.semilogx(euclidean_model_capacity, euclidean_test_errors, label='Euclidean Test Error')
@@ -163,9 +183,68 @@ def Q3_results():
     plt.show()
 
 
+def highdetail_multimodel_runtest():
+    k_values = []
+    for i in range(1, 200):
+        k_values.append(i)
+    train_sNC = load_data(train_sNC_file_path)
+    train_sDAT = load_data(train_sDAT_file_path)
+    test_sNC = load_data(test_sNC_file_path)
+    test_sDAT = load_data(test_sDAT_file_path)
+    grid_points = load_grid_points()
+    train_data, train_labels, test_data, test_labels = load_and_concat_data(train_sNC_file_path, train_sDAT_file_path,
+                                                                            test_sNC_file_path, test_sDAT_file_path)
+
+    train_errors = [0] * 5
+    test_errors = [0] * 5
+    train_errors[0], test_errors[0] = classify('manhattan', k_values, train_data, train_labels, test_data, test_labels,
+                                               grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, False)
+    train_errors[1], test_errors[1] = classify('euclidean', k_values, train_data, train_labels, test_data, test_labels,
+                                               grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, False)
+    train_errors[2], test_errors[2] = classify('chebyshev', k_values, train_data, train_labels, test_data, test_labels,
+                                               grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, False)
+    train_errors[3], test_errors[3] = classify('minkowski', k_values, train_data, train_labels, test_data, test_labels,
+                                               grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, False)
+    train_errors[4], test_errors[4] = classify('haversine', k_values, train_data, train_labels, test_data, test_labels,
+                                               grid_points, train_sNC, train_sDAT, test_sNC, test_sDAT, False)
+
+    print("testError Averages")
+    print("Manhattan: ", sum(test_errors[0]) / len(test_errors[0]))
+    print("euclidean: ", sum(test_errors[1]) / len(test_errors[1]))
+    print("chebyshev: ", sum(test_errors[2]) / len(test_errors[2]))
+    print("minkowski: ", sum(test_errors[3]) / len(test_errors[3]))
+    print("haversine: ", sum(test_errors[4]) / len(test_errors[4]))
+
+    print(min(test_errors[2]), "| k = ", test_errors[2].index(min(test_errors[2])))
+
+    plt.title('MultiModeErrorRates')
+    plt.plot(k_values, test_errors[0], label='Test Error Manhattan')
+    plt.plot(k_values, test_errors[1], label='Test Error euclidean')
+    plt.plot(k_values, test_errors[2], label='Test Error chebyshev')
+    plt.plot(k_values, test_errors[3], label='Test Error minkowski')
+    plt.plot(k_values, test_errors[4], label='Test Error haversine')
+    plt.legend()
+    plt.xlabel('K Value')
+    plt.ylabel('Error rate')
+    plt.show()
+
+
+def diagnoseDAT(Xtest, data_dir):
+    train_sNC_file_path = data_dir + "/train.sNC.csv"
+    train_sDAT_file_path = data_dir + "/train.sDAT.csv"
+    test_sNC_file_path = data_dir + "/test.sNC.csv"
+    test_sDAT_file_path = data_dir + "/test.sDAT.csv"
+
+    knn = KNeighborsClassifier(n_neighbors=15, metric="chebyshev")
+    train_data, train_labels, test_data, test_labels = load_and_concat_data(train_sNC_file_path, train_sDAT_file_path,
+                                                                            test_sNC_file_path, test_sDAT_file_path)
+
+    knn.fit(train_data, train_labels)
+    Ytest = knn.predict(Xtest)
+    return Ytest
+
 
 if __name__ == "__main__":
-
     train_sNC_file_path = "train.sNC.csv"
     train_sDAT_file_path = "train.sDAT.csv"
     test_sNC_file_path = "test.sNC.csv"
