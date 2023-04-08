@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
 
 
+# Function to load data from sDAT and sNC files
 def load_data(sDAT_file_path, sNC_file_path):
     sDAT_data = pd.read_csv(sDAT_file_path, header=None)
     sNC_data = pd.read_csv(sNC_file_path, header=None)
@@ -20,6 +21,7 @@ def load_data(sDAT_file_path, sNC_file_path):
     return data, labels
 
 
+# Function to tune SVM hyperparameters using GridSearchCV
 def tune_SVM(train_data, train_labels, kernel, params):
     svm = SVC(kernel=kernel)
     grid_search = GridSearchCV(svm, params, cv=5, scoring='accuracy', return_train_score=True, n_jobs=-1, verbose=2)
@@ -28,13 +30,16 @@ def tune_SVM(train_data, train_labels, kernel, params):
     return grid_search
 
 
+# Function to plot performance of the SVM models
 def plot_performance(grid_search, kernel):
     plt.figure()
 
+    # Plotting performance for linear kernel
     if kernel == 'linear':
         plt.semilogx(grid_search.param_grid['C'], grid_search.cv_results_['mean_test_score'], label='Mean Test Score')
         plt.semilogx(grid_search.param_grid['C'], grid_search.cv_results_['mean_train_score'], label='Mean Train Score')
         plt.xlabel('C')
+    # Plotting performance for polynomial kernel
     elif kernel == 'poly':
         mean_test_score = grid_search.cv_results_['mean_test_score'].reshape(len(grid_search.param_grid['C']),
                                                                              len(grid_search.param_grid['degree']))
@@ -45,6 +50,7 @@ def plot_performance(grid_search, kernel):
             plt.semilogx(grid_search.param_grid['C'], mean_train_score[:, idx], label=f'Train Score (degree {degree})')
         plt.xlabel('C')
         plt.ylabel('Accuracy')
+    # Plotting performance for RBF kernel
     elif kernel == 'rbf':
         mean_test_score = grid_search.cv_results_['mean_test_score'].reshape(len(grid_search.param_grid['C']),
                                                                              len(grid_search.param_grid['gamma']))
@@ -61,6 +67,7 @@ def plot_performance(grid_search, kernel):
     plt.show()
 
 
+# Function to plot the confusion matrix
 def plot_confusion_matrix(y_true, y_pred, title):
     cm = confusion_matrix(y_true, y_pred)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['sNC', 'sDAT'])
@@ -119,6 +126,7 @@ def Q3_results(train_sDAT_file_path, train_sNC_file_path, test_sDAT_file_path, t
 
 
 if __name__ == "__main__":
+    # Loading the data
     train_sDAT_file_path = "train.fdg_pet.sDAT.csv"
     train_sNC_file_path = "train.fdg_pet.sNC.csv"
     test_sDAT_file_path = "test.fdg_pet.sDAT.csv"
