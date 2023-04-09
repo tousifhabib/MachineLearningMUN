@@ -1,0 +1,36 @@
+Question 1:
+
+Best C for linear SVM: 10.0
+Linear SVM performance:
+              precision    recall  f1-score   support
+
+         0.0       0.98      0.81      0.88       415
+         1.0       0.59      0.93      0.72       122
+
+    accuracy                           0.84       537
+   macro avg       0.78      0.87      0.80       537
+weighted avg       0.89      0.84      0.85       537
+
+Question 2:
+Best C and degree for polynomial SVM: {'C': 100.0, 'degree': 2}
+Polynomial SVM performance:
+              precision    recall  f1-score   support
+
+         0.0       0.98      0.85      0.91       415
+         1.0       0.65      0.94      0.77       122
+
+    accuracy                           0.87       537
+   macro avg       0.82      0.90      0.84       537
+weighted avg       0.91      0.87      0.88       537
+
+Question 3:
+Best C and gamma for RBF SVM: {'C': 10.0, 'gamma': 1.0}
+RBF SVM performance:
+              precision    recall  f1-score   support
+
+         0.0       0.98      0.85      0.91       415
+         1.0       0.65      0.94      0.77       122
+
+    accuracy                           0.87       537
+   macro avg       0.82      0.90      0.84       537
+weighted avg       0.91      0.87      0.88       537

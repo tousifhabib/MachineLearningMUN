@@ -24,7 +24,7 @@ def load_data(sDAT_file_path, sNC_file_path):
 # Function to tune SVM hyperparameters using GridSearchCV
 def tune_SVM(train_data, train_labels, kernel, params):
     svm = SVC(kernel=kernel)
-    grid_search = GridSearchCV(svm, params, cv=5, scoring='accuracy', return_train_score=True, n_jobs=-1, verbose=2)
+    grid_search = GridSearchCV(svm, params, cv=5, scoring='accuracy', return_train_score=True, n_jobs=-1)
     grid_search.fit(train_data, train_labels)
 
     return grid_search
